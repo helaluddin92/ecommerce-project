@@ -1,0 +1,31 @@
+{% extends 'base.html' %} {% load static %}
+<!--title-->
+{% block title %} {{settings.title}} {% endblock title %}
+<!--End Title-->
+
+<!--Meta Description-->
+{% block metadescription %} {{settings.description}} 
+{% endblock metadescription%}
+<!--Meta Description-->
+
+<!--Meta Keyword-->
+{% block metakeywords %} {{settings.keyword}} {% endblock metakeywords %}
+
+<!-- Begin Slider With Banner Area -->
+{% block slider %}
+<!--Slider Snippets-->
+{% include 'snippets/slider.html' %}
+<!--Slider Snippets-->
+{% endblock slider %}
+<!-- Slider With Banner Area End Here -->
+
+<!--Sidebar-->
+{% block sidebar %} {% endblock sidebar %}
+<!--End Sidebar-->
+
+<!--Main Content-->
+{% block mainbody %}
+<!--Main Content-->
+{% include 'snippets/content.html' %}
+<!--End Main Content-->
+{% endblock mainbody %}
