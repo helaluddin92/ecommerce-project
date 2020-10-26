@@ -1,8 +1,10 @@
-from django.shortcuts import render, HttpResponseRedirect
+from django.shortcuts import render, HttpResponseRedirect, get_object_or_404, HttpResponse
 from django.urls import reverse
 from django.contrib import messages
+from django.db.models import Q
 from .models import *
 from product.models import *
+from .forms import SearchForm
 # Create your views here.
 
 
@@ -65,6 +67,48 @@ def contact_us(request):
     return render(request, 'contact.html', context=context)
 
 
+def search(request):
+    query = request.GET['q']
+    sel_category = request.GET.get('cat_id', None)
+    if query:
+        category_products = Category.objects.all()
+        products = Product.objects.filter(
+            Q(title__icontains=query) |
+            Q(detail__icontains=query),
+            image_category__in=('Product', 'Featured')
+        )
+        count = products.count()
+    elif sel_category:
+        category_products = get_object_or_404(Category, pk=sel_category)
+        products = Product.objects.filter(
+            Q(title__icontains=query) |
+            Q(detail__icontains=query),
+            image_category__in=('Product', 'Featured'),
+            category=category_products,
+        )
+        count = products.count()
+        if category_products:
+            products = products.filter(
+                category__title__icontains=category_products.title,
+                image_category__in=('Product', 'Featured')
+            )
+            count = products.count()
+    else:
+        query = ""
+        products = None
+    categories = Category.objects.all()
+    settings = Setting.objects.get(id=1)
+    context = {
+        'query': query,
+        'products': products,
+        'category_products': category_products,
+        'categories': categories,
+        'count': count,
+        'settings': settings
+    }
+    return render(request, 'category_product.html', context)
+
+
 def single_product(request, id, slug):
     settings = Setting.objects.get(id=1)
     single_product = Product.objects.get(id=id)
@@ -88,11 +132,13 @@ def category_product(request, slug):
     category_products = Category.objects.get(slug=slug)
     products = Product.objects.filter(
         category=category_products, image_category__in=('Product', 'Featured'))[:12]
+    count = products.count()
     context = {
         'settings': settings,
         'categories': categories,
         'category_products': category_products,
-        'products': products
+        'products': products,
+        'count': count
     }
 
     return render(request, 'category_product.html', context=context)

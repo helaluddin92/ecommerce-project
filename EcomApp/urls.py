@@ -1,11 +1,13 @@
 from django.urls import path
-from .views import home, single_product, category_product, about_us, contact_us
+from .views import home, single_product, category_product, about_us, contact_us, search
 
 urlpatterns = [
     path('', home, name='home-page'),
 
     path('about-us/', about_us, name='about-us-page'),
     path('contact/', contact_us, name='contact-page'),
+
+    path('search/', search, name='search-page'),
 
     path('product/<int:id>/<slug:slug>/',
          single_product, name='product-details'),

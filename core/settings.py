@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'mptt',
     'EcomApp',
     'product',
+    'orders',
 ]
 
 MIDDLEWARE = [
